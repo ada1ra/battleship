@@ -9,7 +9,7 @@ classDiagram
         +Board board2
         +Player currentPlayer
         +List~Move~ moveHistory
-        +Map~Player,List~ Aircraft~~ playerAircraft
+        +Map~Player, List⟨Aircraft⟩~ playerAircraft
         +applyMove(Move) void
         +isGameOver() Boolean
         +getWinner() Player?
