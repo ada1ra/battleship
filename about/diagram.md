@@ -9,25 +9,37 @@ classDiagram
         +Board board2
         +Player currentPlayer
         +List~Move~ moveHistory
-        +Map~Player, List⟨Aircraft⟩~ playerAircraft
-        +applyMove(Move) void
-        +isGameOver() Boolean
-        +getWinner() Player?
+        +Int shotsRemaining
+        +Boolean gameOver
+        +start() void
+        +processMove(Move) MoveResult
         +getOpponent(Player) Player
         +getBoard(Player) Board
+        +getWinner() Player?
     }
 
     class Player {
         +Int id
         +String name
         +Int rating
+        +List~Aircraft~ aircrafts
+        +List~PlayerGameResult~ gameHistory
+    }
+
+    class PlayerGameResult {
+        +Int gameId
+        +String opponentName
+        +Boolean won
+        +Int shotsFired
+        +Int shipsLost
     }
 
     class Board {
-        +Player owner
         +Cell[][] cells
         +List~Ship~ ships
         +List~Mine~ mines
+        +getCell(Int, Int) Cell
+        +isCellFree(Int, Int) Boolean
         +placeShip(Ship) Boolean
         +placeMine(Mine) Boolean
         +isAllShipsSunk() Boolean
@@ -54,11 +66,10 @@ classDiagram
 
     class Aircraft {
         +AircraftType type
-        +Player owner
         +Int remainingUses
-        +getAttackPattern(Cell) List~Pair~
+        +getAttackPattern(Int, Int) List~Pair~
     }
-
+    
     class Move {
         <<abstract>>
         +Player player
@@ -79,15 +90,14 @@ classDiagram
         +Mine mine
     }
 
-    class GameEngine {
-        +Game currentGame
-        +startNewGame(Player, Player, GameMode) Game
-        +processMove(Move) MoveResult
-        +getShotsRemaining() Int
+    class MoveResult {
+        <<sealed>>
+        +Success
+        +Invalid(reason: String)
+        +GameOver
     }
 
     class MoveValidator {
-        +RuleSet ruleSet
         +validate(Move, Game) Boolean
     }
 
@@ -95,66 +105,103 @@ classDiagram
         <<interface>>
         +getShotsCount(Board) Int
         +canPlaceMine(Board) Boolean
-        +isValidAircraftTarget(Aircraft, List~Cell~) Boolean
     }
 
-    class StandardRules
-    class ExperiencedRules
-    class ExtendedRules
+    class StandardRules {
+    }
+
+    class ExperiencedRules {
+    }
+
+    class ExtendedRules {
+    }
+
+    class DataStorage {
+        <<interface>>
+        +loadAllPlayers() List~Player~
+        +saveAllPlayers(List~Player~) void
+        +loadGameSummaries() List~GameSummary~
+        +saveGameSummary(GameSummary) void
+        +loadGameDetail(Int) GameDetail?
+        +saveGameDetail(Int, GameDetail) void
+        +completeGame(Game) void
+    }
+
+    class JsonDataStorage {
+    }
+
+    class GameSummary {
+        +Int id
+        +Int player1Id
+        +Int player2Id
+        +String mode
+        +Int winnerId
+    }
+
+    class GameDetail {
+        +Int id
+        +String player1Name
+        +String player2Name
+        +String mode
+        +String winnerName
+        +String finalBoardState1
+        +String finalBoardState2
+        +List~String~ moves
+        +fromGame(Game) GameDetail$
+    }
+    
+    class UserInterface {
+        <<interface>>
+        +showMessage(String) void
+        +readCommand() String
+    }
 
     class ConsoleUI {
         +start() void
         -newGame() void
         -placementPhase(Game) void
         -gameLoop(Game) void
+        -parseMove(String, Player, Game)
+        -selectPlayer(Player?)
         -finishGame(Game) void
+        -preparePlayersForGame(Game) void
         -managePlayers() void
-        -viewGameLog() void
+        -loadPlayers() void
+        -showGameLog() void
     }
-
     class BoardRenderer {
         +printBoard(Board, Boolean) void
     }
 
-    class PlayerFileData {
-        +loadPlayers() List~Player~
-        +savePlayers(List~Player~) void
-        +updateRating(Player, Int) void
-        +findPlayerById(Int) Player?
-        +findPlayerByName(String) Player?
-        +createPlayer(String) Player
-    }
-
-    class GameFileData {
-        +saveGame(Game) void
-        +loadGameLog(Int) String?
-    }
-
-    class GameLogSerializer {
-        +serialize(Game) String
-    }
-
-    Game "1" -- "2" Player
-    Game "1" -- "2" Board
-    Game "1" -- "*" Move
-    Board "1" -- "100" Cell
-    Board "1" -- "10" Ship
-    Board "1" -- "*" Mine
-    Player "1" -- "*" Aircraft
-    Move <|-- ShotMove
-    Move <|-- AircraftMove
-    Move <|-- PlaceMineMove
-    GameEngine --> MoveValidator
-    MoveValidator --> RuleSet
-    RuleSet <|.. StandardRules
-    RuleSet <|.. ExperiencedRules
-    RuleSet <|.. ExtendedRules
-    ShotMove ..> Cell
-    AircraftMove ..> Aircraft
-    PlaceMineMove ..> Mine
-    ConsoleUI --> GameEngine
-    ConsoleUI --> GameFileData
-    ConsoleUI --> PlayerFileData
-    ConsoleUI --> BoardRenderer
-    GameFileData --> GameLogSerializer
+    Game "1" -- "2" Player : association
+    Game "1" *-- "2" Board : composition
+    Game "1" *-- "*" Move : composition
+    Board "1" *-- "100" Cell : composition
+    Board "1" *-- "10" Ship : composition
+    Board "1" *-- "0..3" Mine : composition
+    Player "1" *-- "*" Aircraft : composition
+    Player "1" *-- "*" PlayerGameResult : composition
+    Move <|-- ShotMove : inheritance
+    Move <|-- AircraftMove : inheritance
+    Move <|-- PlaceMineMove : inheritance
+    Game --> MoveValidator : uses
+    MoveValidator --> RuleSet : uses
+    RuleSet <|.. StandardRules : realization
+    RuleSet <|.. ExperiencedRules : realization
+    RuleSet <|.. ExtendedRules : realization
+    ShotMove ..> Cell : dependency
+    AircraftMove ..> Aircraft : dependency
+    PlaceMineMove ..> Mine : dependency
+    Game ..> MoveResult : dependency
+    ConsoleUI ..|> UserInterface : realization
+    ConsoleUI --> Game : uses
+    ConsoleUI --> BoardRenderer : uses
+    ConsoleUI --> DataStorage : uses
+    DataStorage <|.. JsonDataStorage : realization
+    GameDetail ..> Game : dependency
+    GameDetail ..> Board : dependency
+    GameDetail ..> CellState : dependency
+    GameDetail ..> Move : dependency
+    DataStorage --> GameSummary : uses
+    DataStorage --> GameDetail : uses
 ```
