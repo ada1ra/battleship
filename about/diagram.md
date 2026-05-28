@@ -173,6 +173,47 @@ classDiagram
         +printBoard(Board, Boolean) void
     }
 
+    class MainWindow {
+        +show(Stage) void
+    }
+    class GameSetupDialog {
+        -DataStorage storage
+        +show(Stage) void
+    }
+    class GameView {
+        -DataStorage storage
+        +show(Game, DataStorage) void
+        -handlePlacementClick() void
+        -handleShotClick() void
+        -startPlaying() void
+        -saveGameAndUpdateRatings() void
+    }
+    class PlayerManagerDialog {
+        -DataStorage storage
+        +show() void
+    }
+    class HistoryDialog {
+        -DataStorage storage
+        +show() void
+        -showGameDetail(Int) void
+    }
+    class DisplayMode {
+        <<enumeration>>
+        TURN_BASED
+        SIMULTANEOUS
+    }
+
+    MainWindow --> GameSetupDialog : association (opens)
+    MainWindow --> PlayerManagerDialog : association (opens)
+    MainWindow --> HistoryDialog : association (opens)
+    GameSetupDialog --> GameView : association (creates)
+    GameSetupDialog --> DataStorage : association (uses)
+    GameView --> Game : association (uses)
+    GameView --> DataStorage : association (uses)
+    GameView ..> DisplayMode : dependency
+    PlayerManagerDialog --> DataStorage : association (uses)
+    HistoryDialog --> DataStorage : association (uses)
+    
     Game "1" -- "2" Player : association
     Game "1" *-- "2" Board : composition
     Game "1" *-- "*" Move : composition
