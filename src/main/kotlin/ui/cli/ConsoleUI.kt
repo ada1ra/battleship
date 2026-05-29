@@ -2,6 +2,7 @@ package edu.battleship.ui.cli
 
 import edu.battleship.data.DataStorage
 import edu.battleship.data.JsonDataStorage
+import edu.battleship.data.SqliteDataStorage
 import edu.battleship.engine.AircraftMove
 import edu.battleship.engine.Game
 import edu.battleship.engine.Move
@@ -18,12 +19,10 @@ import edu.battleship.model.Ship
 import edu.battleship.model.ShipType
 import edu.battleship.ui.UserInterface
 
-class ConsoleUI : UserInterface {
-    private val storage: DataStorage = JsonDataStorage()
+class ConsoleUI(private val storage: DataStorage = JsonDataStorage()) : UserInterface {
     private var players = mutableListOf<Player>()
     private var nextPlayerId = 1
     private var nextGameId = 1
-
     override fun showMessage(msg: String) = println(msg)
 
     override fun readCommand(): String {

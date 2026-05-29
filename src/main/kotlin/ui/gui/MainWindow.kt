@@ -1,5 +1,7 @@
 package edu.battleship.ui.gui
 
+import edu.battleship.data.DataStorage
+import edu.battleship.data.JsonDataStorage
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Scene
@@ -11,7 +13,7 @@ import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 
-class MainWindow {
+class MainWindow(private val storage: DataStorage = JsonDataStorage()) {
     fun show(stage: Stage) {
         stage.title = "Battleship Admin"
 
@@ -37,17 +39,17 @@ class MainWindow {
 
         val newGameBtn =
             createGlassButton("New Game", onAction = {
-                GameSetupDialog().show(stage)
+                GameSetupDialog(storage).show(stage)
             })
 
         val playersBtn =
             createGlassButton("Player Manager", onAction = {
-                PlayerManagerDialog().show()
+                PlayerManagerDialog(storage).show()
             })
 
         val historyBtn =
             createGlassButton("Game History", onAction = {
-                HistoryDialog().show()
+                HistoryDialog(storage).show()
             })
 
         val exitBtn =

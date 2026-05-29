@@ -203,6 +203,11 @@ classDiagram
         SIMULTANEOUS
     }
 
+    class SqliteDataStorage {
+        -Connection connection
+    }
+
+    DataStorage <|.. SqliteDataStorage : realization
     MainWindow --> GameSetupDialog : association (opens)
     MainWindow --> PlayerManagerDialog : association (opens)
     MainWindow --> HistoryDialog : association (opens)

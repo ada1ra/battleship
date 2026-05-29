@@ -51,7 +51,7 @@ object GuiStyles {
     const val MOVE_ITEM_STYLE = "-fx-font-size: $FONT_SIZE_NORMAL; -fx-text-fill: $TEXT_STANDARD; -fx-padding: 2 0 2 5;"
     const val TRANSPARENT_SCROLL_STYLE = "-fx-background: transparent; -fx-background-color: transparent;"
     const val HISTORY_BOARD_GRID_STYLE = "-fx-background-color: $SEMI_TRANSPARENT_WHITE; -fx-padding: 5;"
-    const val INFO_BOX_STYLE = "-fx-background-color: $SEMI_TRANSPARENT_WHITE -fx-background-radius: 8;"
+    const val INFO_BOX_STYLE = "-fx-background-color: $SEMI_TRANSPARENT_WHITE; -fx-background-radius: 8;"
     const val BOARD_GRID_STYLE = "-fx-background-color: $SEMI_TRANSPARENT_WHITE; -fx-padding: 8;"
 
     const val ACTIVE_BORDER = "-fx-border-color: $PLACEMENT_HIGHLIGHT_BORDER;"
