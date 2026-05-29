@@ -7,7 +7,7 @@ plugins {
 }
 
 javafx {
-    version = "21"
+    version = "17.0.10"
     modules("javafx.controls", "javafx.fxml")
 }
 
@@ -32,20 +32,34 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // TestFX + Monocle
+    testImplementation("org.testfx:testfx-junit5:4.0.18")
+
+    testImplementation("de.flapdoodle.fx21:openjfx-monocle-java17:1.0.1")
+
+    // Mockito + расширение для JUnit 5
+    testImplementation("org.mockito:mockito-core:5.10.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.10.0")
+
+    // AssertJ
+    testImplementation("org.assertj:assertj-core:3.25.3")
 }
 
 tasks.test {
     useJUnitPlatform()
-}
 
+    // Настройки для headless-режима
+    jvmArgs("-Djdk.attach.allowAttachSelf=true")
+    systemProperties(
+        "testfx.robot" to "glass",
+        "glass.platform" to "Monocle",
+        "monocle.platform" to "Headless",
+        "prism.order" to "sw",
+    )
+}
 application {
     mainClass.set("edu.battleship.MainKt")
-    applicationDefaultJvmArgs =
-        listOf(
-            "--add-opens=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
-            "-Dprism.verbose=false",
-            "-Djavafx.verbose=false",
-        )
 }
 
 kotlin {
