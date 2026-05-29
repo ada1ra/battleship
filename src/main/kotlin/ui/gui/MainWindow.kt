@@ -13,7 +13,9 @@ import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 
-class MainWindow(private val storage: DataStorage = JsonDataStorage()) {
+class MainWindow(
+    private val storage: DataStorage = JsonDataStorage(),
+) {
     fun show(stage: Stage) {
         stage.title = "Battleship Admin"
 

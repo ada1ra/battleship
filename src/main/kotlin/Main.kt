@@ -19,7 +19,7 @@ class BattleshipApp : Application() {
 }
 
 fun main() {
-    val storage : DataStorage = SqliteDataStorage()
+    val storage: DataStorage = SqliteDataStorage()
     while (true) {
         println("Launch mode: (1) Console or (2) GUI: ")
         when (readlnOrNull()) {
