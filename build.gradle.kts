@@ -44,6 +44,9 @@ dependencies {
 
     // AssertJ
     testImplementation("org.assertj:assertj-core:3.25.3")
+
+    // SQLite JDBC драйвер
+    implementation("org.xerial:sqlite-jdbc:3.45.1.0")
 }
 
 tasks.test {

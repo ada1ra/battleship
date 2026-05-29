@@ -18,8 +18,9 @@ import edu.battleship.model.Ship
 import edu.battleship.model.ShipType
 import edu.battleship.ui.UserInterface
 
-class ConsoleUI : UserInterface {
-    private val storage: DataStorage = JsonDataStorage()
+class ConsoleUI(
+    private val storage: DataStorage = JsonDataStorage(),
+) : UserInterface {
     private var players = mutableListOf<Player>()
     private var nextPlayerId = 1
     private var nextGameId = 1
